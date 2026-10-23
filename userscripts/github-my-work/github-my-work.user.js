@@ -2,7 +2,7 @@
 // @name         GitHub My Work - Configurable Dashboard
 // @name:zh-CN   GitHub My Work — 可配置多列工作台
 // @namespace    https://github.com/shijianjs/userscripts
-// @version      1.1.2
+// @version      1.2.0
 // @description  A configurable multi-column dashboard for GitHub issues and pull requests.
 // @description:zh-CN  可配置的 GitHub Issues / PR 多列工作台，每列一个页面，支持搜索条件或任意 GitHub 地址。
 // @author       shijianjs
@@ -734,23 +734,32 @@
     #dark = false;
     #toolbarTitle;
     #helpButton;
+    #settingsLabel;
     #settingsButton;
+    #reloadLabel;
     #reloadButton;
     #closeButton;
     #settingsActions;
     #status;
+    #saveLabel;
     #saveButton;
+    #restoreLabel;
     #restoreButton;
+    #cancelLabel;
     #cancelButton;
     #editor;
+    #launcherLabel;
     #panelOpen = false;
 
     constructor(translator, settings) {
       this.#translator = translator;
       this.#settings = settings;
 
-      this.launcher = el('button', { id: 'gmw-launcher', type: 'button' });
-      this.launcher.addEventListener('click', () => this.open());
+      this.#launcherLabel = el('span', { class: 'gmw-launcher-label' });
+      this.launcher = el('button', { id: 'gmw-launcher', type: 'button' }, node => {
+        node.append(new Icon('lucide:briefcase').element, this.#launcherLabel);
+        node.addEventListener('click', () => this.open());
+      });
 
       this.#notice = new NoticeBar(translator, () => this.dismissNotice());
       this.#columns = el('div', { id: 'gmw-columns' });
@@ -760,10 +769,14 @@
         node.append(new Icon('lucide:circle-help').element);
         node.addEventListener('click', () => this.toggleNotice());
       });
+      this.#settingsLabel = el('span');
       this.#settingsButton = el('button', { type: 'button' }, node => {
+        node.append(new Icon('lucide:settings').element, this.#settingsLabel);
         node.addEventListener('click', () => this.openSettings());
       });
+      this.#reloadLabel = el('span');
       this.#reloadButton = el('button', { type: 'button' }, node => {
+        node.append(new Icon('lucide:refresh-cw').element, this.#reloadLabel);
         node.addEventListener('click', () => this.reloadFrames());
       });
       // 关闭按钮是全局的，随手可用，所以用图标放在最右侧
@@ -774,14 +787,20 @@
 
       // 设置页自己的操作按钮顶到工具栏，替换设置页期间用不到的三个按钮
       this.#status = el('span', { class: 'gmw-settings-status' });
+      this.#saveLabel = el('span');
+      this.#restoreLabel = el('span');
+      this.#cancelLabel = el('span');
       this.#settingsActions = el('div', { class: 'gmw-toolbar-actions', attrs: { hidden: '' } }, node => {
         const save = el('button', { type: 'button', class: 'gmw-primary' }, button => {
+          button.append(new Icon('lucide:save').element, this.#saveLabel);
           button.addEventListener('click', () => this.saveSettings());
         });
         const restore = el('button', { type: 'button' }, button => {
+          button.append(new Icon('lucide:rotate-ccw').element, this.#restoreLabel);
           button.addEventListener('click', () => this.restoreDefaults());
         });
         const cancel = el('button', { type: 'button' }, button => {
+          button.append(new Icon('lucide:x').element, this.#cancelLabel);
           button.addEventListener('click', () => this.hideSettings());
         });
         node.append(this.#status, save, restore, cancel);
@@ -951,18 +970,18 @@
     }
 
     retranslate() {
-      this.launcher.textContent = this.#translator.t('app.launcher');
+      this.#launcherLabel.textContent = this.#translator.t('app.launcher');
       this.#toolbarTitle.textContent = this.#translator.t('app.title');
       const helpLabel = this.#notice.visible
         ? this.#translator.t('toolbar.helpHide')
         : this.#translator.t('toolbar.helpShow');
       this.#helpButton.setAttribute('aria-label', helpLabel);
       this.#helpButton.title = helpLabel;
-      this.#settingsButton.textContent = this.#translator.t('toolbar.settings');
-      this.#reloadButton.textContent = this.#translator.t('toolbar.reload');
-      this.#saveButton.textContent = this.#translator.t('settings.save');
-      this.#restoreButton.textContent = this.#translator.t('settings.restore');
-      this.#cancelButton.textContent = this.#translator.t('settings.cancel');
+      this.#settingsLabel.textContent = this.#translator.t('toolbar.settings');
+      this.#reloadLabel.textContent = this.#translator.t('toolbar.reload');
+      this.#saveLabel.textContent = this.#translator.t('settings.save');
+      this.#restoreLabel.textContent = this.#translator.t('settings.restore');
+      this.#cancelLabel.textContent = this.#translator.t('settings.cancel');
       this.#closeButton.setAttribute('aria-label', this.#translator.t('toolbar.close'));
       this.#closeButton.title = this.#translator.t('toolbar.close');
       this.#notice.retranslate();
@@ -1084,6 +1103,9 @@
       right: 20px;
       bottom: 20px;
       z-index: 2147483000;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       padding: 10px 16px;
       border: 1px solid var(--gmw-accent);
       border-radius: 8px;
@@ -1142,6 +1164,9 @@
     .gmw-toolbar button,
     .gmw-settings button,
     .gmw-view-row button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       padding: 6px 10px;
       border: 1px solid var(--gmw-border);
       border-radius: 6px;

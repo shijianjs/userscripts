@@ -44,6 +44,10 @@ Removing those headers weakens GitHub's browser-side protections. Keep the rule 
 
 ## Changelog
 
+### 1.2.0
+
+- Added icons to the toolbar "Settings" / "Reload all" buttons and the settings "Save and apply" / "Restore defaults" / "Cancel" buttons; the "My Work" launcher in the bottom-right corner also gets a briefcase icon. Icons sit next to their labels, matching the existing "Add column" button style.
+
 ### 1.1.2
 
 - Icons now come from `@require`d iconify-icon 3.0.4, downloaded and cached by the userscript manager

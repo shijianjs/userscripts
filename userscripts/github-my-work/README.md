@@ -1,6 +1,6 @@
 # GitHub My Work — 可配置的多列工作台
 
-[![GreasyFork](https://img.shields.io/badge/GreasyFork-v1.1.2-670000?logo=greasyfork&logoColor=white)](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard)
+[![GreasyFork](https://img.shields.io/badge/GreasyFork-v1.2.0-670000?logo=greasyfork&logoColor=white)](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard)
 
 GitHub Issues / PR 多列工作台。安装后 GitHub 页面右下角会出现 `My Work` 按钮，打开后每列用一个 iframe 展示一个 GitHub 页面——默认是个人 Issue、参与的 Issue、个人 PR 和参与的 PR，也可以换成任意 `github.com` 页面地址。
 
@@ -100,6 +100,10 @@ GreasyFork 的新建脚本页只有两个输入框：代码框和「Additional i
 - Additional info：默认语言填 [greasyfork.md](greasyfork.md)，再点「添加本地化的附加信息」新增英语 (en) 填 [greasyfork.en.md](greasyfork.en.md)。版本更新时同步改两份文件里的更新日志。
 
 ## 更新日志
+
+### 1.2.0
+
+- 工具栏的「设置」「全部刷新」与设置页的「保存并应用」「恢复默认」「取消」按钮加上图标；右下角「我的工作」启动按钮加 `briefcase` 图标。图标与文字并排，样式与已有的「添加一列」按钮一致。
 
 ### 1.1.2
 
