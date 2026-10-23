@@ -128,7 +128,7 @@ setter。不要做 `create()` / `apply()` 之类的模板方法抽象 —— 那
 ```
 userscripts/<脚本名>/   油猴脚本，<脚本名>.user.js + README.md
 userscripts/<脚本名>/test/  可选，Playwright 运行时验证用例，不参与分发
-styles/                 Stylus 用户样式，*.user.css
+userstyles/             Stylus 用户样式，*.user.css
 ```
 
 ## 核心约定

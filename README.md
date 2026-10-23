@@ -8,7 +8,7 @@
 userscripts/              油猴脚本（Tampermonkey / Violentmonkey）
 └── <脚本名>/            每个脚本一个文件夹
     └── <脚本名>.user.js
-styles/                   Stylus 用户样式，*.user.css
+userstyles/               Stylus 用户样式，*.user.css
 ```
 
 每个脚本都是独立的单文件，没有构建步骤，仓库中的文件即为最终分发文件，可直接通过 raw 链接安装。
