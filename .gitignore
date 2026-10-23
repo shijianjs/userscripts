@@ -5,10 +5,12 @@ desktop.ini
 
 # Editors
 .vscode/
-.idea/
+/.idea/*
 *.swp
 *~
 
 # Logs / deps
 *.log
 node_modules/
+
+/target
