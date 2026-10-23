@@ -1,14 +1,20 @@
 # GitHub My Work — 可配置的多列工作台
 
+[![GreasyFork](https://img.shields.io/badge/GreasyFork-install-670000?logo=greasyfork&logoColor=white)](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard)
+
 GitHub Issues / PR 多列工作台。安装后 GitHub 页面右下角会出现 `My Work` 按钮，打开后每列用一个 iframe 展示一个 GitHub 页面——默认是个人 Issue、参与的 Issue、个人 PR 和参与的 PR，也可以换成任意 `github.com` 页面地址。
 
 ![GitHub My Work 面板预览：四列 Issue / PR 列表](screenshot.webp)
 
 ## 安装
 
+推荐从 [GreasyFork](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard) 安装，之后可以跟随版本自动更新：
+
 1. 安装 Tampermonkey、Violentmonkey 或兼容的用户脚本管理器。
-2. 安装脚本：[github-my-work.user.js](https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/github-my-work/github-my-work.user.js)
+2. 打开 [GreasyFork 脚本页](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard)，点「安装此脚本」。
 3. 安装并配置 [Header Ext](https://github.com/binge6/header-ext)，移除 `github.com` 的 `X-Frame-Options` 与 `Content-Security-Policy` 响应头。否则各列为空白，这是 GitHub 的 iframe 限制，脚本无法绕过。
+
+也可以直接从仓库安装（不会自动更新）：[github-my-work.user.js](https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/github-my-work/github-my-work.user.js)。
 
 ## 使用
 

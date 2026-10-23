@@ -18,7 +18,8 @@ styles/                   Stylus 用户样式，*.user.css
 ### 油猴脚本
 
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 或 [Violentmonkey](https://violentmonkey.github.io/)。
-2. 打开对应脚本的 raw 链接，扩展会自动弹出安装页：
+2. 优先从 GreasyFork 安装（见下方脚本列表），可跟随版本自动更新。
+3. 没有发布到 GreasyFork 的脚本，打开对应脚本的 raw 链接安装，扩展会自动弹出安装页：
 
    ```
    https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/<脚本名>/<脚本名>.user.js
@@ -33,7 +34,7 @@ styles/                   Stylus 用户样式，*.user.css
 
 | 脚本 | 说明 | 安装 |
 | --- | --- | --- |
-| [GitHub My Work — 可配置工作台](userscripts/github-my-work/README.md) | 可配置的多列 GitHub Issues / PR 工作台，每列可用搜索条件或页面地址，需要 Header Ext 配合解除 iframe 限制 | [安装](https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/github-my-work/github-my-work.user.js) |
+| [GitHub My Work — 可配置工作台](userscripts/github-my-work/README.md) | 可配置的多列 GitHub Issues / PR 工作台，每列可用搜索条件或页面地址，需要 Header Ext 配合解除 iframe 限制 | [![GreasyFork](https://img.shields.io/badge/GreasyFork-install-670000?logo=greasyfork&logoColor=white)](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard) |
 
 ## 约定
 
