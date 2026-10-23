@@ -1405,8 +1405,9 @@
 
     .gmw-view-list {
       display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
       gap: 14px;
-      max-width: 1100px;
+      align-items: start;
     }
 
     .gmw-view-row {
@@ -1431,9 +1432,13 @@
 
     .gmw-view-row-body {
       display: grid;
-      grid-template-columns: minmax(180px, 1fr) 150px minmax(260px, 2fr);
-      gap: 12px;
+      grid-template-columns: minmax(120px, 1fr) minmax(120px, 150px);
+      gap: 10px 12px;
       align-items: start;
+    }
+
+    .gmw-view-row-body .gmw-field-value {
+      grid-column: 1 / -1;
     }
 
     .gmw-field {
