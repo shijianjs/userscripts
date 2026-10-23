@@ -1,6 +1,6 @@
-# GitHub My Work — 4-Column Dashboard
+# GitHub My Work — 可配置的多列工作台
 
-GitHub Issues / PR 四列工作台。安装后 GitHub 页面右下角会出现 `My Work` 按钮，打开后在四列 iframe 中分别展示个人 Issue、参与的 Issue、个人 PR 和参与的 PR。
+GitHub Issues / PR 多列工作台。安装后 GitHub 页面右下角会出现 `My Work` 按钮，打开后每列用一个 iframe 展示一个 GitHub 页面——默认是个人 Issue、参与的 Issue、个人 PR 和参与的 PR，也可以换成任意 `github.com` 页面地址。
 
 ## 安装
 
@@ -10,28 +10,87 @@ GitHub Issues / PR 四列工作台。安装后 GitHub 页面右下角会出现 `
 
 ## 使用
 
-- 点击右下角 `My Work` 打开面板，`Close` 或 `Esc` 关闭。
-- `Settings` 中可以修改四列的标题与 GitHub 搜索语法，保存后立即生效；设置保存在当前浏览器的 `localStorage`（键为 `github-my-work.settings.v1`）。
-- 每列的 `Open ↗` 在新标签页打开对应的原生 GitHub 搜索页；`Reload all` 一次刷新全部列。
-- 面板主题跟随 GitHub 的亮色、暗色或自动模式，并会在主题切换后更新。
-- 四列是四个独立的 GitHub 页面，各自保留 GitHub 自己的筛选、分页和滚动行为，不是 API 聚合的数据列表。
+- 点击右下角 `My Work` 打开面板，右上角的 `×` 图标按钮随时关闭，`Esc` 也可以。
+- 顶部提示条说明 iframe 被拦截时该检查什么；点右侧的 `×` 关闭，工具栏的 `?` 图标可以随时重新显示。
+- `设置` 中可以：
+  - 修改每列的标题；
+  - 把每列的**类型**设为「搜索条件」或「页面地址」：
+    - 搜索条件：GitHub issues 搜索语法，脚本会拼成 `/issues?q=...`，并裁剪掉重复的 GitHub 顶栏、侧栏和页脚，只保留内容区；
+    - 页面地址：必须是 `https://github.com/` 开头的地址（可以省略协议，保存时会补全），原样嵌入，不裁剪；
+  - 用「添加一列」/ 每行右上角的删除按钮增减列，最多 8 列、最少 1 列；
+  - 切换界面语言（自动 / 中文 / English），保存后立即生效。
+- 设置页打开时，`保存并应用` / `恢复默认` / `取消` 会出现在顶部工具栏（替代此时用不到的「设置」和「全部刷新」），保存或取消后恢复原按钮。
+- 每列的 `打开 ↗` 在新标签页打开对应页面；`全部刷新` 一次刷新全部列。
+- 面板主题跟随 GitHub 的亮色、暗色或自动模式，切换时 iframe 内的页面也会一起切换。
+- 各列是独立的 GitHub 页面，保留 GitHub 自己的筛选、分页和滚动行为，不是 API 聚合的数据列表。
 
-## 默认查询
+设置保存在当前浏览器的 `localStorage`，键为 `github-my-work.settings.v2`；1.0 时代的 `github-my-work.settings.v1`（纯数组）会在首次读取时自动迁移为「搜索条件」列。
 
-| 列 | 查询 |
-| --- | --- |
-| My Issues | `is:issue user:@me state:open sort:updated-desc` |
-| Involved Issues | `is:issue involves:@me state:open sort:updated-desc` |
-| My PRs | `is:pr user:@me state:open sort:updated-desc` |
-| Involved PRs | `is:pr involves:@me state:open archived:false sort:updated-desc` |
+## 默认列
+
+| 列 | 类型 | 内容 |
+| --- | --- | --- |
+| 我的 Issue | 搜索条件 | `is:issue user:@me state:open sort:updated-desc` |
+| 我参与的 Issue | 搜索条件 | `is:issue involves:@me state:open sort:updated-desc` |
+| 我的 PR | 搜索条件 | `is:pr user:@me state:open sort:updated-desc` |
+| 我参与的 PR | 搜索条件 | `is:pr involves:@me state:open archived:false sort:updated-desc` |
+
+默认列只在没有保存过设置时初始化一次，之后完全由设置页决定。
+
+## 图标
+
+按钮图标使用 [iconify web component](https://iconify.design/docs/iconify-icon/)（`iconify-icon`，lucide 图标集），脚本会从 `https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js` 异步加载这个组件。
+
+github.com 自身也使用 iconify 并带有一份不完整的图标缓存，第三方 iconify 组件在上面有时取不到图标。脚本在这种情况下会退回使用内嵌的 lucide 图形（同一套图标数据，只保留 4 个用到的图标），所以断网或图标 CDN 不可用时按钮依然正常显示。
+
+## 运行时验证
+
+`test/e2e.mjs` 是一份 Playwright 用例，通过 CDP 连接一个已开启调试端口的 Chrome，验证 launcher、面板、动态列、URL 列校验、增删列、提示条、语言切换、iframe 裁剪、主题同步、Esc 关闭和窄屏布局。用例不属于分发内容，不需要也无法通过 raw 链接安装。
+
+前置条件：
+
+1. 测试实例里已安装配置好 [Header Ext](https://github.com/binge6/header-ext)（否则 iframe 会被 `X-Frame-Options` 拦截）。
+2. 该实例已登录 GitHub。
+3. Chrome 以 `--remote-debugging-port=9222` 启动；默认用户目录不允许开调试端口，需复制一份配置再启动，具体步骤见仓库根目录 `AGENTS.md`。
+
+运行：
+
+```powershell
+node userscripts/github-my-work/test/e2e.mjs
+```
+
+用例默认把仓库里的 `.user.js` 直接注入页面，因此验证的是当前工作区的代码，不依赖 Tampermonkey 里是否装的是最新版本；页面上已有的旧实例会先被移除。想验证 Tampermonkey 里已安装的版本时，设置 `INJECT=0`。
+
+可用环境变量覆盖本机差异（无需写入仓库）：
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `CDP_URL` | `http://127.0.0.1:9222` | 调试端点 |
+| `PLAYWRIGHT_CORE` | 自动从全局 npm 目录查找 | `playwright-core` 所在路径 |
+| `OUT_DIR` | `<仓库>/target/gmw-screenshots` | 截图输出目录 |
+| `INJECT` | `1` | `0` 表示使用 Tampermonkey 已安装的版本 |
+
+用例开始时会清空本实例里的脚本设置以获得确定结果，结束时恢复默认列和自动语言；结果条数取决于账号真实数据，只记录不参与断言。
 
 ## 安全说明
 
 移除上述响应头会削弱 GitHub 的浏览器端防护。请把 Header Ext 规则限定在 `github.com`，不再使用时关闭。
 
-脚本不需要 GitHub token，也不会把查询发送到外部服务；自定义设置只保存在本地浏览器。
+脚本不需要 GitHub token，也不会把查询发送到外部服务；自定义设置只保存在本地浏览器。唯一的网络依赖是图标 CDN，失败时会自动退回内嵌图标。
 
 ## 更新日志
+
+### 1.1.0
+
+- 每列可选「搜索条件」或「页面地址」，页面地址必须是 `github.com`；列数可增可减（1–8 列）。
+- 查询列注入样式，只保留 `[data-component="PageLayout.Content"]`，隐藏重复的 GitHub 顶栏、侧栏与页脚，并去掉多余的最小高度与空白滚动条。
+- 顶部提示条增加关闭按钮，工具栏增加 `?` 图标按钮可重新显示提示；关闭状态会被记住。
+- 关闭按钮改为右上角图标按钮，全局可用；设置页的保存/恢复默认/取消移到顶部工具栏。
+- 修复亮色模式下入口按钮文字不可见（主题变量放在 `:host` 上）。
+- 支持中英文界面，可自动检测或手动指定。
+- 图标改用 iconify web component，加载失败时退回内嵌 lucide 图形。
+- 设置格式升级为 v2（对象），自动迁移 1.0 的数组格式。
+- 代码改为面向对象结构（设置、视图、列、表单行、面板、图标各自成类），样式移入 Shadow DOM 隔离。
 
 ### 1.0.0
 

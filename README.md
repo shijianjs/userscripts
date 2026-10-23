@@ -33,7 +33,7 @@ styles/                   Stylus 用户样式，*.user.css
 
 | 脚本 | 说明 | 安装 |
 | --- | --- | --- |
-| [GitHub My Work — 4-Column Dashboard](userscripts/github-my-work/README.md) | 可配置的四列 GitHub Issues / PR 工作台，需要 Header Ext 配合解除 iframe 限制 | [安装](https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/github-my-work/github-my-work.user.js) |
+| [GitHub My Work — 可配置工作台](userscripts/github-my-work/README.md) | 可配置的多列 GitHub Issues / PR 工作台，每列可用搜索条件或页面地址，需要 Header Ext 配合解除 iframe 限制 | [安装](https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/github-my-work/github-my-work.user.js) |
 
 ## 约定
 
