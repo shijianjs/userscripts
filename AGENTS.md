@@ -5,15 +5,15 @@
 ## 目录结构
 
 ```
-userscripts/   油猴脚本，*.user.js
-styles/        Stylus 用户样式，*.user.css
+userscripts/<脚本名>/   油猴脚本，<脚本名>.user.js + README.md
+styles/                 Stylus 用户样式，*.user.css
 ```
 
 ## 核心约定
 
 - 单文件、无构建步骤。仓库中的文件就是最终分发文件，任何修改必须可直接通过 raw 链接安装。
 - 不引入打包器、依赖、生成产物或压缩版本。
-- 文件名使用 kebab-case，一个脚本一个文件。
+- 文件名使用 kebab-case；油猴脚本一个脚本一个文件夹，文件夹名与 `.user.js` 文件同名。
 - 新增或修改脚本时，保持文件顶部元数据块完整。
 
 ### 油猴脚本
@@ -38,4 +38,6 @@ styles/        Stylus 用户样式，*.user.css
 
 ## 文档
 
-安装方式、元数据示例见 [README.md](README.md)。新增脚本后在 README 中补一行索引即可，不必生成额外文档。
+根目录 [README.md](README.md) 维护安装方式、元数据示例和脚本索引。
+
+每个脚本文件夹包含自己的 `README.md`，说明用途、依赖、安装步骤、使用方式、安全注意事项和更新日志。新增脚本时同时更新这两处。

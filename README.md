@@ -5,8 +5,10 @@
 ## 目录结构
 
 ```
-userscripts/   油猴脚本（Tampermonkey / Violentmonkey），*.user.js
-styles/        Stylus 用户样式，*.user.css
+userscripts/              油猴脚本（Tampermonkey / Violentmonkey）
+└── <脚本名>/            每个脚本一个文件夹
+    └── <脚本名>.user.js
+styles/                   Stylus 用户样式，*.user.css
 ```
 
 每个脚本都是独立的单文件，没有构建步骤，仓库中的文件即为最终分发文件，可直接通过 raw 链接安装。
@@ -19,13 +21,19 @@ styles/        Stylus 用户样式，*.user.css
 2. 打开对应脚本的 raw 链接，扩展会自动弹出安装页：
 
    ```
-   https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/<脚本名>.user.js
+   https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/<脚本名>/<脚本名>.user.js
    ```
 
 ### Stylus 样式
 
 1. 安装 [Stylus](https://github.com/openstyles/stylus)。
 2. 在 Stylus 管理面板中导入对应的 `.user.css` 文件，或访问 raw 链接后按提示安装。
+
+## 脚本列表
+
+| 脚本 | 说明 | 安装 |
+| --- | --- | --- |
+| [GitHub My Work — 4-Column Dashboard](userscripts/github-my-work/README.md) | 可配置的四列 GitHub Issues / PR 工作台，需要 Header Ext 配合解除 iframe 限制 | [安装](https://raw.githubusercontent.com/shijianjs/userscripts/main/userscripts/github-my-work/github-my-work.user.js) |
 
 ## 约定
 
