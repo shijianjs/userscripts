@@ -800,7 +800,7 @@
           button.addEventListener('click', () => this.restoreDefaults());
         });
         const cancel = el('button', { type: 'button' }, button => {
-          button.append(new Icon('lucide:x').element, this.#cancelLabel);
+          button.append(new Icon('lucide:undo-2').element, this.#cancelLabel);
           button.addEventListener('click', () => this.hideSettings());
         });
         node.append(this.#status, save, restore, cancel);
