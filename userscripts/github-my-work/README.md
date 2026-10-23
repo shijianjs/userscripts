@@ -2,6 +2,8 @@
 
 GitHub Issues / PR 多列工作台。安装后 GitHub 页面右下角会出现 `My Work` 按钮，打开后每列用一个 iframe 展示一个 GitHub 页面——默认是个人 Issue、参与的 Issue、个人 PR 和参与的 PR，也可以换成任意 `github.com` 页面地址。
 
+![GitHub My Work 面板预览：四列 Issue / PR 列表](screenshot.webp)
+
 ## 安装
 
 1. 安装 Tampermonkey、Violentmonkey 或兼容的用户脚本管理器。
