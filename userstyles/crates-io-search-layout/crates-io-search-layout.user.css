@@ -1,0 +1,99 @@
+/* ==UserStyle==
+@name         Better crates.io Search Layout
+@namespace    https://github.com/shijianjs/userscripts
+@version      1.1.1
+@description  crates.io 的搜索 / 关键词 / 分类页宽屏化，以响应式卡片网格展示结果
+@author       shijianjs
+==/UserStyle== */
+@-moz-document url-prefix("https://crates.io/search"),
+url-prefix("https://crates.io/keywords"),
+url-prefix("https://crates.io/categories") {
+	.width-limit {
+		width: calc(100vw - 100px) !important;
+	}
+
+	/* 结果列表由 ol 默认布局改为自适应卡片网格 */
+	body main.main > div.inner-main ol.list {
+		display: grid !important;
+		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)) !important;
+		gap: 10px !important;
+		padding: 0 !important;
+		margin: 0 auto !important;
+		list-style: none !important;
+
+		> li {
+			margin: 0 !important;
+			box-sizing: border-box !important;
+			padding: 24px !important;
+			background: #fff !important;
+			border: 1px solid #f0f0f0 !important;
+			border-radius: 8px !important;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+
+			&:hover {
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+				transform: translateY(-2px);
+			}
+
+			> div.crate-row {
+				padding: unset !important;
+				box-shadow: unset !important;
+				overflow: hidden;
+
+				> div.description-box {
+					width: 100%;
+				}
+
+				> ul.stats {
+					display: flex;
+					gap: 16px;
+					width: 100%;
+					margin-top: var(--space-xs);
+
+					> li {
+						margin-top: unset !important;
+						position: relative;
+
+						&.downloads:hover::after {
+							content: "All-Time Downloads";
+						}
+						&.recent-downloads:hover::after {
+							content: "Recent Downloads";
+						}
+						&.updated-at:hover::after {
+							content: "Updated";
+						}
+
+						&.updated-at time {
+							white-space: nowrap;
+						}
+
+						&.downloads,
+						&.recent-downloads,
+						&.updated-at {
+							> span > span:first-of-type {
+								display: none;
+							}
+
+							&:hover::after {
+								position: absolute;
+								left: 50%;
+								top: calc(100% + 6px);
+								transform: translateX(-50%);
+								background: #888;
+								color: #fff;
+								padding: 4px 8px;
+								border-radius: 4px;
+								white-space: nowrap;
+								font-size: 12px;
+								line-height: 1.4;
+								z-index: 1000;
+								pointer-events: none;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

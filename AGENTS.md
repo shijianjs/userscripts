@@ -128,14 +128,16 @@ setter。不要做 `create()` / `apply()` 之类的模板方法抽象 —— 那
 ```
 userscripts/<脚本名>/   油猴脚本，<脚本名>.user.js + README.md
 userscripts/<脚本名>/test/  可选，Playwright 运行时验证用例，不参与分发
-userstyles/             Stylus 用户样式，*.user.css
+userstyles/<样式名>/    Stylus 用户样式，<样式名>.user.css + README.md
+userstyles/<样式名>/test/  可选，Playwright 运行时验证用例，不参与分发
+userstyles/_lib/       样式运行时验证的公共库，不参与分发
 ```
 
 ## 核心约定
 
 - 单文件、无构建步骤。仓库中的文件就是最终分发文件，任何修改必须可直接通过 raw 链接安装。
 - 不引入打包器、依赖、生成产物或压缩版本。
-- 文件名使用 kebab-case；油猴脚本一个脚本一个文件夹，文件夹名与 `.user.js` 文件同名。
+- 文件名使用 kebab-case；油猴脚本一个脚本一个文件夹，Stylus 样式一个样式一个文件夹，文件夹名与主文件（`.user.js` / `.user.css`）同名。
 - 新增或修改脚本时，保持文件顶部元数据块完整。
 - `test/` 下的文件不属于分发内容，不得被 `.user.js` 引用、内联或提交到安装路径。
 
@@ -150,14 +152,17 @@ userstyles/             Stylus 用户样式，*.user.css
 
 ### Stylus 样式
 
-- 使用 `.user.css` 后缀，建议包含 `/* ==UserStyle== */` 元数据块。
-- 域名限定使用 `@-moz-document domain(...)` / `url-prefix(...)`，范围尽量窄。
+- 使用 `.user.css` 后缀，包含 `/* ==UserStyle== */` 元数据块；`@namespace` 固定为 `https://github.com/shijianjs/userscripts`。
+- 域名限定使用 `@-moz-document domain(...)` / `url-prefix(...)` / `regexp(...)`，范围尽量窄。
 - 需要用户可调参数时使用 Stylus 的 `@var` 定义，而不是硬编码。
+- 一个样式一个文件夹：`<样式名>.user.css` + `README.md`，可选 `test/e2e.mjs`。
 
 ## 验证
 
-- 修改 `.user.js` 后至少执行 `node --check <文件>` 确认语法正确。
-- 样式与运行时行为无法自动验证；涉及页面行为的变化需在浏览器中手动安装确认，交付时如实说明未验证部分。
+- 修改 `.user.js` / `.mjs` 后至少执行 `node --check <文件>` 确认语法正确。
+- 油猴脚本的运行时行为、Stylus 样式的视觉效果无法完全自动验证；涉及页面行为的变化需在浏览器中确认，交付时如实说明未验证部分。
+- Stylus 样式可附运行时验证用例 `userstyles/<样式名>/test/e2e.mjs`：连 CDP 打开目标页，把工作区 `.user.css` 按 `@-moz-document` 条件注入后断言关键样式；公共逻辑在 `userstyles/_lib/style-test.mjs`。两者都不参与分发。
+- 断言只能证明样式「生效」，看不出溢出、错位、留白等视觉问题；用例会同时把截图写到 `target/userstyles-<样式名>/`，交付前必须打开截图人工核对效果。运行用例时设 `KEEP=1` 可保留页面与注入样式，便于在浏览器里直接查看。
 
 ### 用 Playwright 连 Chrome 做运行时验证
 

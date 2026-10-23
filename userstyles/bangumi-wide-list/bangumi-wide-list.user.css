@@ -1,0 +1,66 @@
+/* ==UserStyle==
+@name         bangumi 宽屏列表页优化
+@namespace    https://github.com/shijianjs/userscripts
+@version      1.1.1
+@description  使用卡片样式展示 bangumi 的信息最全的那个列表页，尽量铺满屏幕
+@author       shijianjs
+==/UserStyle== */
+@-moz-document regexp("https://(bgm|bangumi).tv/.*/(browser|list|tag).*"),
+regexp("https://(bgm|bangumi).tv/subject_search/.*") {
+	/* 释放宽屏空间 */
+	.mainWrapper {
+		width: calc(100vw - 100px) !important;
+	}
+	.columns.clearit {
+		width: 100%;
+	}
+	#columnSubjectBrowserA {
+		width: calc(100vw - 400px) !important;
+	}
+	#columnSearchB {
+		width: calc(100vw - 420px) !important;
+	}
+	#browserTools {
+		border-bottom: unset !important;
+	}
+
+	/* 列表由 ul 默认布局改为自适应网格 */
+	#browserItemList.browserFull {
+		display: grid !important;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+		gap: 10px !important;
+		padding: 0 !important;
+		margin: 0 auto !important;
+		list-style: none !important;
+	}
+
+	/* 每个条目做成卡片；只改外层外观，不动内部结构 */
+	#browserItemList.browserFull > li.item {
+		margin: 0 !important;
+		box-sizing: border-box !important;
+		padding: 16px !important;
+		background: #fff !important;
+		border: 1px solid #f0f0f0 !important;
+		border-radius: 8px !important;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+	}
+
+	#browserItemList.browserFull > li.item:hover {
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+	}
+
+	/* 排名角标与收藏按钮贴合卡片圆角 */
+	ul.browserFull li.item span.rank {
+		top: 0 !important;
+		right: 0 !important;
+		border-top-left-radius: unset !important;
+		border-top-right-radius: 8px !important;
+		border-bottom-left-radius: 8px !important;
+		border-bottom-right-radius: unset !important;
+	}
+
+	ul.browserFull li.item div.inner div.collectBlock {
+		top: unset !important;
+		bottom: 5px;
+	}
+}

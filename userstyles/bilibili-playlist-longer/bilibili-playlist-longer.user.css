@@ -1,0 +1,14 @@
+/* ==UserStyle==
+@name         bilibili 播放列表加长
+@namespace    https://github.com/shijianjs/userscripts
+@version      1.0.2
+@description  bilibili 视频页右侧的播放列表加长，避免列表被高度截断
+@author       shijianjs
+==/UserStyle== */
+@-moz-document url-prefix("https://www.bilibili.com/video/") {
+	/* 350px 预留给站点顶栏与视频信息区，剩余高度全部留给播放列表 */
+	.video-pod .video-pod__body {
+		max-height: calc(100vh - 350px) !important;
+		height: auto !important;
+	}
+}

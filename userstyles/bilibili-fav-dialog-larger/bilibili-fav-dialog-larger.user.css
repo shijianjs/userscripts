@@ -1,0 +1,47 @@
+/* ==UserStyle==
+@name         bilibili 添加到收藏夹弹窗加大
+@namespace    https://github.com/shijianjs/userscripts
+@version      1.0.1
+@description  放大 bilibili「添加到收藏夹」弹窗，并把收藏夹列表改为卡片网格
+@author       shijianjs
+==/UserStyle== */
+@-moz-document domain("bilibili.com") {
+	/* 弹窗加宽到 80vw，高度不超过视口 */
+	.bili-dialog-m .bili-dialog-bomb .collection-m-exp {
+		width: 80vw !important;
+	}
+	.bili-dialog-m .bili-dialog-bomb .collection-m-exp .content {
+		padding: 0 36px !important;
+		height: auto !important;
+		max-height: 80vh !important;
+		overflow: auto;
+	}
+	.collection-m-exp .content .group-list {
+		max-height: none !important;
+		padding-bottom: 14px;
+	}
+
+	/* 收藏夹列表改为自适应卡片网格 */
+	.collection-m-exp .content .group-list > ul {
+		display: grid !important;
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+		gap: 8px !important;
+		padding: 0 !important;
+		margin: 16px auto !important;
+		list-style: none !important;
+	}
+	.collection-m-exp .content .group-list > ul > li {
+		margin: 0 !important;
+		box-sizing: border-box !important;
+		padding: 12px !important;
+		background: #fff !important;
+		border: 1px solid #f0f0f0 !important;
+		border-radius: 8px !important;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+	}
+
+	/* 收藏夹分组管理区域一并放大 */
+	.fav-collapse-wrap {
+		max-height: 90vh !important;
+	}
+}

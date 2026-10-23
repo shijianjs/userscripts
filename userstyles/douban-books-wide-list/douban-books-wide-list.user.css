@@ -1,0 +1,53 @@
+/* ==UserStyle==
+@name         豆瓣读书列表宽屏优化
+@namespace    https://github.com/shijianjs/userscripts
+@version      1.0.1
+@description  使用卡片样式展示豆瓣读书的列表，解决官方样式在大屏下只能竖排展示 4 本书的尴尬
+@author       shijianjs
+==/UserStyle== */
+@-moz-document url-prefix("https://book.douban.com/people/"),
+url-prefix("https://book.douban.com/tag/"),
+url-prefix("https://book.douban.com/subject_search"),
+url-prefix("https://search.douban.com/book/") {
+	/* 释放宽屏空间：主容器与正文区加宽，右侧给侧栏留位置 */
+	#wrapper {
+		width: calc(100vw - 100px) !important;
+	}
+	.grid-16-8 .article,
+	#root div:has(> div > div > .item-root) {
+		width: calc(100vw - 450px) !important;
+	}
+
+	/* 列表由 ul 默认布局改为自适应网格 */
+	ul.interest-list,
+	ul.subject-list,
+	#root div:has(> div > .item-root) {
+		display: grid !important;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+		gap: 10px !important;
+		padding: 0 !important;
+		margin: 0 auto !important;
+		list-style: none !important;
+	}
+
+	/* 每个条目做成卡片；只改外层外观，不动 .pic / .info 等内部结构 */
+	ul > li.subject-item,
+	#root div:has(> .item-root) {
+		margin: 0 !important;
+		box-sizing: border-box !important;
+		padding: 16px !important;
+		background: #fff !important;
+		border: 1px solid #f0f0f0 !important;
+		border-radius: 8px !important;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+	}
+
+	ul > li.subject-item:hover,
+	#root div:has(> .item-root):hover {
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+	}
+
+	.subject-item .info .ft .ebook-link {
+		position: unset !important;
+	}
+}

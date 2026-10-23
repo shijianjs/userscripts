@@ -1,0 +1,14 @@
+/* ==UserStyle==
+@name         雪球组合收益率曲线变细
+@namespace    https://github.com/shijianjs/userscripts
+@version      1.0.1
+@description  调细雪球组合页的收益率曲线，减少视觉干扰
+@author       shijianjs
+==/UserStyle== */
+@-moz-document url-prefix("https://xueqiu.com/P/"),
+url-prefix("https://www.xueqiu.com/P/") {
+	/* 收益率曲线变细 */
+	.chart svg path {
+		stroke-width: 2 !important;
+	}
+}
