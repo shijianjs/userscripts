@@ -78,6 +78,13 @@ node userscripts/github-my-work/test/e2e.mjs
 
 脚本不需要 GitHub token，也不会把查询发送到外部服务；自定义设置只保存在本地浏览器。唯一的网络依赖是图标 CDN，失败时会自动退回内嵌图标。
 
+## 发布到 GreasyFork
+
+GreasyFork 的新建脚本页只有两个输入框：代码框和「Additional info」（Markdown）。脚本名称与描述由头部的 `@name` / `@description`（以及 `:zh-CN` 本地化版本）决定，不需要单独填写。
+
+- 代码框：粘贴 `github-my-work.user.js` 全文。
+- Additional info：直接粘贴 [greasyfork.md](greasyfork.md) 的内容，版本更新时同步改这里的更新日志。
+
 ## 更新日志
 
 ### 1.1.1
