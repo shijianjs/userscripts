@@ -1,10 +1,14 @@
 // ==UserScript==
 // @name         GitHub My Work - Configurable Dashboard
+// @name:zh-CN   GitHub My Work — 可配置多列工作台
 // @namespace    https://github.com/shijianjs/userscripts
-// @version      1.1.0
-// @description  A configurable multi-column dashboard for GitHub Issues and pull requests.
+// @version      1.1.1
+// @description  A configurable multi-column dashboard for GitHub issues and pull requests.
+// @description:zh-CN  可配置的 GitHub Issues / PR 多列工作台，每列一个页面，支持搜索条件或任意 GitHub 地址。
 // @author       shijianjs
 // @license      MIT
+// @homepageURL  https://github.com/shijianjs/userscripts/tree/main/userscripts/github-my-work
+// @supportURL   https://github.com/shijianjs/userscripts/issues
 // @match        https://github.com/*
 // @grant        none
 // ==/UserScript==

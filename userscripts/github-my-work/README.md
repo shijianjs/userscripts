@@ -80,6 +80,10 @@ node userscripts/github-my-work/test/e2e.mjs
 
 ## 更新日志
 
+### 1.1.1
+
+- 补充本地化元数据（`@name:zh-CN` / `@description:zh-CN`）以及 `@homepageURL` / `@supportURL`，便于在 GreasyFork 等平台展示中文名称与说明。
+
 ### 1.1.0
 
 - 每列可选「搜索条件」或「页面地址」，页面地址必须是 `github.com`；列数可增可减（1–8 列）。
