@@ -83,7 +83,7 @@ node userscripts/github-my-work/test/e2e.mjs
 GreasyFork 的新建脚本页只有两个输入框：代码框和「Additional info」（Markdown）。脚本名称与描述由头部的 `@name` / `@description`（以及 `:zh-CN` 本地化版本）决定，不需要单独填写。
 
 - 代码框：粘贴 `github-my-work.user.js` 全文。
-- Additional info：直接粘贴 [greasyfork.md](greasyfork.md) 的内容，版本更新时同步改这里的更新日志。
+- Additional info：默认语言填 [greasyfork.md](greasyfork.md)，再点「添加本地化的附加信息」新增英语 (en) 填 [greasyfork.en.md](greasyfork.en.md)。版本更新时同步改两份文件里的更新日志。
 
 ## 更新日志
 
