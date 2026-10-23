@@ -34,7 +34,6 @@ const CDP_URL = process.env.CDP_URL || 'http://127.0.0.1:9222';
 const OUT_DIR = process.env.OUT_DIR || join(repoRoot, 'target', 'gmw-screenshots');
 const INJECT = process.env.INJECT !== '0';
 const STORAGE_KEY = 'github-my-work.settings.v2';
-const ICON_ICONIFY = 'https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js';
 
 const DEFAULT_QUERIES = [
   'is:issue user:@me state:open sort:updated-desc',
@@ -70,6 +69,8 @@ function loadPlaywrightCore() {
 
 const { chromium } = loadPlaywrightCore();
 const scriptSource = readFileSync(scriptPath, 'utf8');
+// @require 的依赖在真实环境里由油猴注入；手动注入代码时需要自己补上
+const REQUIRES = [...scriptSource.matchAll(/^\/\/\s*@require\s+(\S+)/gm)].map(match => match[1]);
 mkdirSync(OUT_DIR, { recursive: true });
 
 const checks = [];
@@ -122,6 +123,11 @@ async function injectCurrentScript() {
     document.getElementById('gmw-panel')?.remove();
     document.querySelector('gmw-app')?.remove();
   });
+  // 先补上 @require 的依赖（页面上已存在就跳过），再注入脚本本体
+  for (const url of REQUIRES) {
+    const present = await page.evaluate(u => [...document.scripts].some(script => script.src === u), url);
+    if (!present) await page.addScriptTag({ url });
+  }
   // sourceURL 让运行时异常带上脚本名，便于区分是不是本脚本的错
   await page.addScriptTag({ content: scriptSource + '\n//# sourceURL=github-my-work.user.js' });
   await launcher.waitFor({ state: 'visible', timeout: 20000 });
@@ -198,20 +204,22 @@ check(
   JSON.stringify(srcs.map(src => src.slice(0, 30))),
 );
 
-// 图标：iconify web component 已加载；渲染不出来时用内嵌 svg 兜底，两者都必须是 svg
+// 图标：iconify-icon 由 @require 引入并缓存，渲染结果必须是 shadow DOM 里的 svg
 await page.waitForFunction(() => Boolean(window.customElements.get('iconify-icon')), null, { timeout: 15000 }).catch(() => {});
 await page.waitForFunction(() => {
-  const hasSvg = node => Boolean(node.querySelector('svg'))
-    || Boolean(node.querySelector('iconify-icon')?.shadowRoot?.querySelector('svg'));
-  const nodes = [...document.querySelector('gmw-app').shadowRoot.querySelectorAll('.gmw-icon')];
-  return nodes.length >= 3 && nodes.every(hasSvg);
+  const nodes = [...document.querySelector('gmw-app').shadowRoot.querySelectorAll('.gmw-icon')]
+    .filter(node => node.getClientRects().length > 0);
+  return nodes.length >= 3
+    && nodes.every(node => Boolean(node.querySelector('iconify-icon')?.shadowRoot?.querySelector('svg')));
 }, null, { timeout: 20000 }).catch(() => {});
-const icons = await page.locator('.gmw-icon').evaluateAll(nodes => nodes.map(node => ({
-  icon: node.querySelector('iconify-icon')?.getAttribute('icon') ?? 'inline-svg',
-  svg: Boolean(node.querySelector('svg')) || Boolean(node.querySelector('iconify-icon')?.shadowRoot?.querySelector('svg')),
-})));
-check('iconify-icon 已定义', await page.evaluate(() => Boolean(window.customElements.get('iconify-icon'))));
-check('图标渲染为 svg', icons.length >= 3 && icons.every(icon => icon.svg), JSON.stringify(icons));
+const icons = await page.locator('.gmw-icon').evaluateAll(nodes => nodes
+  .filter(node => node.getClientRects().length > 0)
+  .map(node => ({
+    icon: node.querySelector('iconify-icon')?.getAttribute('icon') ?? '(missing)',
+    svg: Boolean(node.querySelector('iconify-icon')?.shadowRoot?.querySelector('svg')),
+  })));
+check('iconify-icon 已定义（@require 引入）', await page.evaluate(() => Boolean(window.customElements.get('iconify-icon'))));
+check('图标渲染为 svg', icons.length >= 3 && icons.every(icon => icon.svg && icon.icon !== '(missing)'), JSON.stringify(icons));
 await page.screenshot({ path: join(OUT_DIR, '02-panel.png') });
 
 // 提示条：关闭 / 帮助按钮开关 / 持久化
@@ -308,10 +316,16 @@ check(
 );
 const closeButton = page.locator('.gmw-toolbar .gmw-icon-button').last();
 const closeLabel = await closeButton.getAttribute('aria-label');
+const closeIconRendered = await page.evaluate(() => {
+  const root = document.querySelector('gmw-app').shadowRoot;
+  const buttons = [...root.querySelectorAll('.gmw-toolbar .gmw-icon-button')];
+  const icon = buttons[buttons.length - 1]?.querySelector('iconify-icon');
+  return Boolean(icon?.shadowRoot?.querySelector('svg'));
+});
 check(
   '关闭按钮是图标按钮且全局可用',
-  /Close|关闭/.test(closeLabel ?? '') && (await closeButton.locator('.gmw-icon svg').count()) === 1,
-  closeLabel,
+  /Close|关闭/.test(closeLabel ?? '') && closeIconRendered,
+  `${closeLabel} / rendered=${closeIconRendered}`,
 );
 const rowCount = await page.locator('.gmw-view-row').count();
 check('设置页列出四列', rowCount === 4, rowCount);
@@ -351,7 +365,11 @@ const stored = await page.evaluate(key => localStorage.getItem(key), STORAGE_KEY
 check('设置写入 localStorage', Boolean(stored) && stored.includes('Repo issues'), stored ? stored.slice(0, 100) : '(空)');
 
 // URL 列不裁剪
-await page.waitForTimeout(2500);
+await page.waitForFunction(() => {
+  const frames = [...document.querySelector('gmw-app').shadowRoot.querySelectorAll('.gmw-column iframe')];
+  return Boolean(frames[frames.length - 1]?.contentDocument?.body?.innerText?.trim());
+}, null, { timeout: 20000 }).catch(() => {});
+await page.waitForTimeout(500);
 const urlFrame = await (await columnFrames.last().elementHandle()).contentFrame();
 const urlFrameState = await urlFrame?.evaluate(() => ({
   hasHeader: Boolean(document.querySelector('header')),

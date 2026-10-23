@@ -2,7 +2,7 @@
 // @name         GitHub My Work - Configurable Dashboard
 // @name:zh-CN   GitHub My Work — 可配置多列工作台
 // @namespace    https://github.com/shijianjs/userscripts
-// @version      1.1.1
+// @version      1.1.2
 // @description  A configurable multi-column dashboard for GitHub issues and pull requests.
 // @description:zh-CN  可配置的 GitHub Issues / PR 多列工作台，每列一个页面，支持搜索条件或任意 GitHub 地址。
 // @author       shijianjs
@@ -11,6 +11,7 @@
 // @supportURL   https://github.com/shijianjs/userscripts/issues
 // @match        https://github.com/*
 // @grant        none
+// @require      https://cdn.jsdelivr.net/npm/iconify-icon@3.0.4/dist/iconify-icon.min.js
 // ==/UserScript==
 
 (() => {
@@ -21,7 +22,6 @@
 
   const STORAGE_KEY = 'github-my-work.settings.v2';
   const LEGACY_STORAGE_KEY = 'github-my-work.settings.v1';
-  const ICONIFY_SRC = 'https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js';
   const MAX_COLUMNS = 8;
   const SEARCH_URL_PREFIX = '/issues?q=';
   const GITHUB_URL_PATTERN = /^(?:https?:\/\/)?(?:www\.)?github\.com\/\S*$/i;
@@ -184,88 +184,15 @@
     }
   }
 
-  // ---------- 图标（iconify-icon web component，失败时退回文字） ----------
+  // ---------- 图标 ----------
 
-  class IconifyLoader {
-    static #promise = null;
-
-    static ensure() {
-      if (window.customElements?.get('iconify-icon')) return Promise.resolve(true);
-      if (IconifyLoader.#promise) return IconifyLoader.#promise;
-
-      IconifyLoader.#promise = new Promise(resolve => {
-        const script = el('script', { src: ICONIFY_SRC, async: true });
-        script.addEventListener('load', () => resolve(Boolean(window.customElements.get('iconify-icon'))), { once: true });
-        script.addEventListener('error', () => resolve(false), { once: true });
-        document.head.append(script);
-      });
-      return IconifyLoader.#promise;
-    }
-  }
-
-  // iconify 渲染失败时的降级图形：内嵌 lucide 图标数据（与 iconify 用同一套字形）
-  class InlineGlyph {
-    static #ICONS = {
-      'lucide:circle-help': [
-        ['circle', { cx: '12', cy: '12', r: '10' }],
-        ['path', { d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01' }],
-      ],
-      'lucide:x': [['path', { d: 'M18 6L6 18M6 6l12 12' }]],
-      'lucide:plus': [['path', { d: 'M5 12h14m-7-7v14' }]],
-      'lucide:trash-2': [
-        ['path', { d: 'M10 11v6m4-6v6m5-11v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' }],
-      ],
-    };
-
-    static create(name) {
-      const NS = 'http://www.w3.org/2000/svg';
-      const svg = document.createElementNS(NS, 'svg');
-      svg.setAttribute('viewBox', '0 0 24 24');
-      svg.setAttribute('fill', 'none');
-      svg.setAttribute('stroke', 'currentColor');
-      svg.setAttribute('stroke-width', '2');
-      svg.setAttribute('stroke-linecap', 'round');
-      svg.setAttribute('stroke-linejoin', 'round');
-      svg.setAttribute('aria-hidden', 'true');
-      for (const [tag, attributes] of InlineGlyph.#ICONS[name] ?? InlineGlyph.#ICONS['lucide:circle-help']) {
-        const node = document.createElementNS(NS, tag);
-        for (const [attribute, value] of Object.entries(attributes)) node.setAttribute(attribute, value);
-        svg.append(node);
-      }
-      return svg;
-    }
-  }
-
+  // iconify-icon 由脚本头部的 @require 引入（3.0.4），由油猴负责下载与缓存。
   class Icon {
-    // 图标交给 iconify web component 渲染；github.com 自带一份不完整的 iconify 缓存，
-    // 组件在上面有时取不到图标，超时后降级为 InlineGlyph
-    static #POLL_INTERVAL = 1000;
-    static #POLL_LIMIT = 4000;
-
     element;
-
-    #iconify;
 
     constructor(name) {
       this.element = el('span', { class: 'gmw-icon' });
-      this.#iconify = el('iconify-icon', { attrs: { icon: name, 'aria-hidden': 'true' } });
-      this.element.append(this.#iconify);
-
-      let waited = 0;
-      const poll = () => {
-        if (this.#rendered()) return;
-        waited += Icon.#POLL_INTERVAL;
-        if (waited < Icon.#POLL_LIMIT) {
-          window.setTimeout(poll, Icon.#POLL_INTERVAL);
-          return;
-        }
-        this.element.replaceChildren(InlineGlyph.create(name));
-      };
-      window.setTimeout(poll, Icon.#POLL_INTERVAL);
-    }
-
-    #rendered() {
-      return Boolean(this.#iconify.shadowRoot?.querySelector('svg'));
+      this.element.append(el('iconify-icon', { attrs: { icon: name, 'aria-hidden': 'true' } }));
     }
   }
 
@@ -1064,8 +991,6 @@
     }
 
     mount() {
-      IconifyLoader.ensure();
-
       const style = el('style');
       style.textContent = STYLES;
       this.#host = el('gmw-app', { attrs: { 'data-theme': 'light' } });
@@ -1248,10 +1173,10 @@
       line-height: 1;
     }
 
-    .gmw-icon svg {
+    .gmw-icon iconify-icon {
       display: block;
-      width: 1em;
-      height: 1em;
+      font-size: inherit;
+      color: inherit;
     }
 
     .gmw-notice {

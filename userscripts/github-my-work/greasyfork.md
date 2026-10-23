@@ -39,10 +39,15 @@ GitHub 页面右下角会多出一个「我的工作」按钮，点开后是可�
 ## 权限与隐私
 
 - `@grant none`：不使用任何 GM API，不读取 cookie，不请求 GitHub token
-- 除从 jsdelivr 加载图标组件（iconify-icon）外没有外部请求；加载失败或离线时自动退回内嵌图标
+- 图标组件（iconify-icon 3.0.4）通过脚本头部的 `@require` 由用户脚本管理器下载并缓存，图标字形再由它从 Iconify API 获取；断网时按钮照常工作，只是图标空白
 - 设置保存在本地 `localStorage`，键为 `github-my-work.settings.v2`；1.0 的旧格式会自动迁移
 
 ## 更新日志
+
+### 1.1.2
+
+- 图标改用 `@require` 引入 iconify-icon 3.0.4，下载与缓存交给用户脚本管理器
+- 移除渲染失败时的内嵌图形降级
 
 ### 1.1.1
 

@@ -39,10 +39,15 @@ Removing those headers weakens GitHub's browser-side protections. Keep the rule 
 ## Permissions and privacy
 
 - `@grant none`: no GM APIs, no cookie access, no GitHub token
-- The only external request is the icon component (iconify-icon) from jsdelivr; if it fails, the script falls back to built-in icons
+- The icon component (iconify-icon 3.0.4) is pulled in through the script's `@require` and cached by the userscript manager; the component then fetches icon data from the Iconify API. Offline, the buttons still work, only the icons are blank
 - Settings live in `localStorage` under `github-my-work.settings.v2`; the 1.0 format is migrated automatically
 
 ## Changelog
+
+### 1.1.2
+
+- Icons now come from `@require`d iconify-icon 3.0.4, downloaded and cached by the userscript manager
+- Removed the built-in icon fallback used when rendering failed
 
 ### 1.1.1
 

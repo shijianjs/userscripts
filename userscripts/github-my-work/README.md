@@ -1,6 +1,6 @@
 # GitHub My Work — 可配置的多列工作台
 
-[![GreasyFork](https://img.shields.io/badge/GreasyFork-install-670000?logo=greasyfork&logoColor=white)](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard)
+[![GreasyFork](https://img.shields.io/badge/GreasyFork-v1.1.2-670000?logo=greasyfork&logoColor=white)](https://greasyfork.org/zh-CN/scripts/601775-github-my-work-configurable-dashboard)
 
 GitHub Issues / PR 多列工作台。安装后 GitHub 页面右下角会出现 `My Work` 按钮，打开后每列用一个 iframe 展示一个 GitHub 页面——默认是个人 Issue、参与的 Issue、个人 PR 和参与的 PR，也可以换成任意 `github.com` 页面地址。
 
@@ -47,9 +47,15 @@ GitHub Issues / PR 多列工作台。安装后 GitHub 页面右下角会出现 `
 
 ## 图标
 
-按钮图标使用 [iconify web component](https://iconify.design/docs/iconify-icon/)（`iconify-icon`，lucide 图标集），脚本会从 `https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js` 异步加载这个组件。
+按钮图标使用 [iconify web component](https://iconify.design/docs/iconify-icon/)（`iconify-icon` 3.0.4，lucide 图标集），通过脚本头部的 `@require` 引入：
 
-github.com 自身也使用 iconify 并带有一份不完整的图标缓存，第三方 iconify 组件在上面有时取不到图标。脚本在这种情况下会退回使用内嵌的 lucide 图形（同一套图标数据，只保留 4 个用到的图标），所以断网或图标 CDN 不可用时按钮依然正常显示。
+```js
+// @require https://cdn.jsdelivr.net/npm/iconify-icon@3.0.4/dist/iconify-icon.min.js
+```
+
+组件由油猴负责下载并缓存，脚本自己不再插入 `<script>`，也不用管加载时序。图标字形在运行时从 Iconify API 获取，所以首次显示需要联网；断网时按钮仍然可用，只是图标空白。
+
+版本固定在 3.0.4，升级时同时改 `@require` 和本节。
 
 ## 运行时验证
 
@@ -67,7 +73,7 @@ github.com 自身也使用 iconify 并带有一份不完整的图标缓存，第
 node userscripts/github-my-work/test/e2e.mjs
 ```
 
-用例默认把仓库里的 `.user.js` 直接注入页面，因此验证的是当前工作区的代码，不依赖 Tampermonkey 里是否装的是最新版本；页面上已有的旧实例会先被移除。想验证 Tampermonkey 里已安装的版本时，设置 `INJECT=0`。
+用例默认把仓库里的 `.user.js` 直接注入页面，因此验证的是当前工作区的代码，不依赖 Tampermonkey 里是否装的是最新版本；页面上已有的旧实例会先被移除。注入前会读取元数据里的 `@require` 并先加载这些依赖（真实环境由油猴负责）。想验证 Tampermonkey 里已安装的版本时，设置 `INJECT=0`。
 
 可用环境变量覆盖本机差异（无需写入仓库）：
 
@@ -84,7 +90,7 @@ node userscripts/github-my-work/test/e2e.mjs
 
 移除上述响应头会削弱 GitHub 的浏览器端防护。请把 Header Ext 规则限定在 `github.com`，不再使用时关闭。
 
-脚本不需要 GitHub token，也不会把查询发送到外部服务；自定义设置只保存在本地浏览器。唯一的网络依赖是图标 CDN，失败时会自动退回内嵌图标。
+脚本不需要 GitHub token，也不会把查询发送到外部服务；自定义设置只保存在本地浏览器。外部请求只有两个，且都是图标相关：油猴下载并缓存 `@require` 的 iconify-icon 组件，图标字形再由该组件从 Iconify API 获取。
 
 ## 发布到 GreasyFork
 
@@ -94,6 +100,12 @@ GreasyFork 的新建脚本页只有两个输入框：代码框和「Additional i
 - Additional info：默认语言填 [greasyfork.md](greasyfork.md)，再点「添加本地化的附加信息」新增英语 (en) 填 [greasyfork.en.md](greasyfork.en.md)。版本更新时同步改两份文件里的更新日志。
 
 ## 更新日志
+
+### 1.1.2
+
+- 图标改用油猴内置的 `@require` 引入 iconify-icon，交给用户脚本管理器下载与缓存，删除脚本内自实现的动态加载。
+- iconify-icon 升级到 3.0.4。
+- 删除渲染失败时的内嵌图形降级：图标依赖联网属正常行为，不再用降级掩盖网络问题。
 
 ### 1.1.1
 
